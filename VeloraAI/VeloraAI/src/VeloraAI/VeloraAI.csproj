@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <ApplicationIcon>VeloraAI.ico</ApplicationIcon>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>VeloraAI</Title>
+    <Version>1</Version>
+    <Authors>mixrifyAI</Authors>
+    <Company>mixrifyAI</Company>
+    <Product>VeloraAI</Product>
+    <Description>𝗩𝗲𝗹𝗼𝗿𝗮𝗔𝗜 is an open-source library powered by LLamaSharp, designed for integrating local AI capabilities into commercial .NET applications. It focuses on efficiency and accessibility, using highly optimized, small-sized models and a strategic downloader that prioritizes speed to ensure fast and seamless access to VeloraAI-supported models.</Description>
+    <PackageProjectUrl>https://github.com/mixrifyAI/VeloraAI</PackageProjectUrl>
+    <PackageIcon>VeloraAI.png</PackageIcon>
+    <RepositoryUrl>https://github.com/mixrifyAI/VeloraAI</RepositoryUrl>
+    <PackageTags>ChatGPT, AI, DeepSeek, LLM, Artificial Intelligence, LLamaSharp</PackageTags>
+    <PackAsTool>False</PackAsTool>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="VeloraAI.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\VeloraAI.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LLamaSharp" Version="0.24.0" />
+    <PackageReference Include="LLamaSharp.Backend.Cpu" Version="0.24.0" />
+    <PackageReference Include="System.Text.Json" Version="9.0.6" />
+  </ItemGroup>
+
+</Project>

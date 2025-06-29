@@ -1,0 +1,83 @@
+﻿using LLama.Common;
+using System;
+using System.Runtime.InteropServices;
+
+
+namespace VeloraAI.WinForms;
+
+public partial class App : Form
+{
+
+    [DllImport("kernel32.dll")]
+    static extern bool AllocConsole();
+
+    bool Authorized = false;
+
+    public App()
+    {
+        InitializeComponent();
+        AllocConsole();
+    }
+
+    private async void App_Load(object sender, EventArgs e)
+    {
+
+        //VeloraAI.TestingMode = true;
+        //VeloraAI.TestingModelPath = @"C:\Users\ziadf\Downloads\Crystal_Think_V2_Q4.gguf";
+        VeloraAI.TextGenerated += (s, text) => tbResponse.Text += text;
+        VeloraAI.ResponseStarted += (s, e) => Console.WriteLine("\n[VELORA is typing...]\n");
+        VeloraAI.ResponseEnded += (s, e) =>
+        {
+
+            Console.WriteLine("\n\n[Done]\n");
+            btnSend.Text = "Send";
+
+        };
+
+        int lastPrintedProgress = -1;
+
+        var progressTask = Task.Run(async () =>
+        {
+            int lastPrintedProgress = -1;
+            while (VeloraAI.CurrentDownloadStatus == VeloraAI.DownloadStatus.InProgress)
+            {
+                if (int.TryParse(VeloraAI.CurrentDownloadProgress.Replace("%", ""), out int progress))
+                {
+                    if (progress != lastPrintedProgress)
+                    {
+                        lastPrintedProgress = progress;
+                        // Remove this print here!
+                        // Console.WriteLine($"Download Progress: {progress}%");
+                    }
+                }
+                await Task.Delay(200);
+            }
+        });
+
+        var result = await VeloraAI.AuthenticateAsync(VeloraAI.Models.Crystal_Think_V2_Q4);
+        Console.WriteLine($"Authentication result: {result}");
+        if (result == VeloraAI.AuthState.Authenticated)
+        {
+            Authorized = true;
+        }
+    }
+
+    private async void btnSend_Click(object sender, EventArgs e)
+    {
+        if (!VeloraAI.IsResponding() && Authorized == true)
+        {
+            btnSend.Text = "Cancel";
+            // Parse string inputs to correct types for AskAsync
+            float temperature = float.TryParse(tbTemperature.Text, out var tempVal) ? tempVal : 0.3f;
+            float topP = float.TryParse(tbTopP.Text, out var topPVal) ? topPVal : 0.8f;
+            int topK = int.TryParse(tbTopK.Text, out var topKVal) ? topKVal : 0;
+            int maxTokens = int.TryParse(tbMaxTokens.Text, out var maxTokensVal) ? maxTokensVal : 128;
+            await VeloraAI.AskAsync(tbPrompt.Text, temperature, topP, topK, 1.1f, maxTokens);
+        }
+        else
+        {
+            VeloraAI.CancelResponse();
+            btnSend.Text = "Send";
+        }
+    }
+}
