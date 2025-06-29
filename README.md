@@ -107,6 +107,31 @@ VeloraAI.ResetHistory(); // or use custom system prompt
 
 ---
 
+## 🎯 Custom Inference Parameters
+
+You can fine-tune Velora's behavior using the following optional parameters in `AskAsync`:
+
+| Parameter       | Description                                              | Recommended for Speed |
+|----------------|----------------------------------------------------------|------------------------|
+| `Temperature`   | Controls randomness (lower = more deterministic)        | `0.2 - 0.3`            |
+| `TopP`          | Nucleus sampling threshold                              | `0.0 - 0.3`            |
+| `TopK`          | Limits token pool to top-K options                      | `0` for fastest        |
+| `RepeatPenalty` | Penalizes repetition                                    | `1.05 - 1.2`           |
+| `MaxTokens`     | Maximum tokens to generate                              | `80 - 128`             |
+
+```csharp
+await VeloraAI.AskAsync(
+    prompt: "Summarize this paragraph.",
+    temperature: 0.25f,
+    TopP: 0.2f,
+    TopK: 0,
+    RepeatPenalty: 1.1f,
+    maxTokens: 80
+);
+```
+
+---
+
 ## 🛠️ Contributing
 
 Pull requests are welcome! Please submit improvements, optimizations, or new model integrations.
