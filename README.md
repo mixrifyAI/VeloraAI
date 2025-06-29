@@ -34,6 +34,10 @@ The fix for this problem is currently unfamiliar, however there is a chance that
 * **.NET 8.0** — Modern C# support.
 * **WinForms & Console** — Sample UI and CLI clients included.
 
+## 🎥 Raw Example Usage
+
+https://github.com/user-attachments/assets/7491731c-10c1-468d-b877-018ce50a61fd
+
 ---
 
 ## 📂 Models Available
