@@ -133,7 +133,7 @@ You can fine-tune Velora's behavior using the following optional parameters in `
 
 ```csharp
 await VeloraAI.AskAsync(
-    prompt: "Summarize this paragraph.",
+    userInput: "Summarize this paragraph.",
     temperature: 0.25f,
     TopP: 0.2f,
     TopK: 0,
