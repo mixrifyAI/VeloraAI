@@ -1,2 +1,155 @@
-# VeloraAI
-VeloraAI is an open-source library powered by LLamaSharp, designed for integrating local AI capabilities into commercial .NET applications. It focuses on efficiency and accessibility, using highly optimized, small-sized models and a strategic downloader that prioritizes speed to ensure fast and seamless access to VeloraAI-supported models.
+# <img src="https://github.com/user-attachments/assets/c4638237-5e6b-4125-8ada-099277df25b1" alt="VeloraAI" width="200"/>
+
+
+🚀 **VeloraAI** is a modern and flexible C# library designed to simplify local LLM integration. It allows developers to interact with quantized AI models directly from .NET 8.0 applications — with a single line of code. Whether you're building chatbots, creative tools, or AI companions, VeloraAI is optimized for speed, reliability, and customization.
+
+---
+
+## ✨ Features
+
+* ⚡ **Quick-Start Model Loading** — Choose from pre-integrated models or load your own via `TestingMode`.
+* 🧠 **Support for Multiple Models** — CrystalThink, Qwen, Mistral, DeepSeek, Llama and more.
+* 🔁 **Event-driven Response System** — React to `TextGenerated`, `ResponseStarted`, and `ResponseEnded` in real-time.
+* 🔐 **Customizable System Prompts** — Use friendly or aggressive instruction styles (e.g., `NoBSMode`).
+* 📦 **Model Downloader** — Automatically fetches models from Hugging Face if not already available.
+* 📷 **Experimental Vision Mode** — Send image + prompt for visual reasoning (WIP).
+
+---
+
+## 🧱 Built With
+
+* **LLamaSharp** — Backbone inference engine.
+* **.NET 8.0** — Modern C# support.
+* **WinForms & Console** — Sample UI and CLI clients included.
+
+---
+
+## 📂 Models Available
+
+| Model                  | Size    | Strengths                                                    |
+| ---------------------- | ------- | ------------------------------------------------------------ |
+| Crystal\_Think\_V2\_Q4 | 2.32 GB | 🥇 Fast, tiny, math-heavy reasoning, Chain-of-Thought format |
+| Qwen\_V3\_4B\_Chat     | 2.70 GB | 🥈 Fast general model with good code and reasoning           |
+| Mistral\_7B\_Chat      | 2.87 GB | 🥉 Informative and precise longer-form chat                  |
+| Llama\_7B\_Chat        | 3.07 GB | Reliable general conversations                               |
+| DeepSeek\_6B\_Coder    | 3.07 GB | Code generation, math-only                                   |
+| DeepSeek\_7B\_Chat     | 5.28 GB | Slower general chat, strong context retention                |
+
+---
+
+## 🔧 Usage
+
+### 1. Authenticate and Start Chatting
+
+```csharp
+var result = await VeloraAI.AuthenticateAsync(VeloraAI.Models.Crystal_Think_V2_Q4);
+if (result == VeloraAI.AuthState.Authenticated)
+{
+    await VeloraAI.AskAsync("What is the capital of France?");
+}
+```
+
+### 2. Hook Into Events
+
+```csharp
+VeloraAI.TextGenerated += (_, text) => Console.Write(text);
+VeloraAI.ResponseStarted += (_, __) => Console.WriteLine("\n[VELORA is typing...]");
+VeloraAI.ResponseEnded += (_, __) => Console.WriteLine("\n\n[Done]");
+```
+
+### 3. Use Custom Models
+
+```csharp
+VeloraAI.TestingMode = true;
+VeloraAI.TestingModelPath = @"C:\path\to\your_model.gguf";
+await VeloraAI.AuthenticateAsync(VeloraAI.Models.TestingModel);
+```
+
+---
+
+## ⚙️ Advanced Prompt Modes
+
+### Friendly Assistant (Default)
+
+Follows a natural conversational tone with emojis and personality.
+
+### NoBS Mode
+
+Blunt, hyper-logical response style with no emotional overhead or filler.
+
+```csharp
+await VeloraAI.AuthenticateAsync(VeloraAI.Models.Crystal_Think_V2_Q4, NoBSMode: true);
+```
+
+---
+
+## 📥 Model Auto-Download
+
+Models are downloaded on first use to:
+
+```
+%APPDATA%/VeloraAI
+```
+
+Progress can be tracked using:
+
+```csharp
+VeloraAI.CurrentDownloadProgress;
+```
+
+---
+
+## 🔄 Reset History
+
+```csharp
+VeloraAI.ResetHistory(); // or use custom system prompt
+```
+
+---
+
+## 🛠️ Contributing
+
+Pull requests are welcome! Please submit improvements, optimizations, or new model integrations.
+
+---
+
+## 📄 License
+
+MIT
+
+---
+
+## 💬 Example Console Output
+
+```
+Authenticating model...
+Authentication result: Authenticated
+
+> What is 21 * 2?
+[VELORA is typing...]
+
+42
+
+[Done]
+```
+
+---
+
+## 🧪 Credits
+
+* Developed by **voidZiAD**
+* Powered by **LLamaSharp**, **GGUF models**, and the C#/.NET 8.0 ecosystem
+
+---
+
+## 🌐 Links
+
+* [LLamaSharp GitHub](https://github.com/SciSharp/LLamaSharp)
+* [HuggingFace Models (Hosted by Velora)](https://huggingface.co/ZiADKY/VeloraAI_SupportedModels)
+* [VeloraAI Console/WinForms Example](#)
+
+---
+
+## 🧠 "VELORA" Personality
+
+> "I'm VELORA — not just another chatbot. I'm here to help you code, reason, and think clearer. No nonsense, just clarity."
