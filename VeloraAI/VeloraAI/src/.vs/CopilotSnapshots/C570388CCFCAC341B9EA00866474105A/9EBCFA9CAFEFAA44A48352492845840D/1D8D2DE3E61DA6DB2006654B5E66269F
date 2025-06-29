@@ -1,0 +1,347 @@
+﻿// 𝗩𝗲𝗹𝗼𝗿𝗮𝗔𝗜
+// uses LLamaSharp for AI model interaction.
+// is a C# library for interacting with AI models that are pre-destined and downloaded for quick optimal use through our own Asynchronous method.
+// supports using your own AI models through TestingMode. Turn on TestingMode, and define TestingModelPath to use your own model.
+// is designed to be used in .NET 8.0 applications.
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net.Http;
+using System.Threading.Tasks;
+using LLama;
+using LLama.Common;
+using LLama.Sampling;
+using System.Diagnostics;
+
+namespace VeloraAI
+{
+    public static class VeloraAI
+    {
+        static LLamaContext _context;
+        static InteractiveExecutor _executor;
+        static ChatSession _session;
+
+        public static event EventHandler<string> TextGenerated = delegate { };
+        public static event EventHandler ResponseStarted = delegate { };
+        public static event EventHandler ResponseEnded = delegate { };
+
+        private static bool Authenticated = false;
+
+        public static bool TestingMode { get; set; } = false;
+
+        public static string TestingModelPath { get; set; } = "";
+
+        public enum Models
+        {
+            TestingModel,
+            Llama_7B_Chat,
+            DeepSeek_6B_Coder,
+            DeepSeek_7B_Chat,
+        }
+
+        public enum AuthState
+        {
+            Authenticated,
+            NotAuthenticated,
+            AlreadyAuthenticated,
+            DownloadingModel,
+            DownloadFailed
+        }
+
+        public enum DownloadStatus
+        {
+            NotStarted,
+            InProgress,
+            Completed,
+            Failed
+        }
+
+        public static DownloadStatus CurrentDownloadStatus { get; private set; } = DownloadStatus.NotStarted;
+        public static string CurrentDownloadProgress { get; private set; } = "0%";
+
+        public class ModelInfo
+        {
+            public string FileName { get; set; }
+            public string DownloadUrl { get; set; }
+            public long ExpectedFileSizeBytes { get; set; }
+
+            public string GetLocalPath()
+            {
+                string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "VeloraAI");
+                return Path.Combine(folder, FileName);
+            }
+        }
+
+        private static readonly Dictionary<Models, ModelInfo> ModelInfos = new()
+        {
+            [Models.Llama_7B_Chat] = new ModelInfo
+            {
+                FileName = "Llama_7B_Chat.gguf",
+                DownloadUrl = "https://huggingface.co/ZiADKY/VeloraAI_SupportedModels/resolve/main/Llama_7B_Chat.gguf?download=true",
+                ExpectedFileSizeBytes = 3298004672L
+            },
+            [Models.DeepSeek_6B_Coder] = new ModelInfo
+            {
+                FileName = "DeepSeek_6B_Coder.gguf",
+                DownloadUrl = "https://huggingface.co/ZiADKY/VeloraAI_SupportedModels/resolve/main/DeepSeek_6B_Coder.gguf?download=true",
+                ExpectedFileSizeBytes = 3299880960
+            },
+            [Models.DeepSeek_7B_Chat] = new ModelInfo
+            {
+                FileName = "DeepSeek_7B_Chat.gguf",
+                DownloadUrl = "https://huggingface.co/ZiADKY/VeloraAI_SupportedModels/resolve/main/DeepSeek_7B_Chat.gguf?download=true",
+                ExpectedFileSizeBytes = 5673852704L
+            },
+        };
+
+        public static async Task<AuthState> AuthenticateAsync(Models modelName, string systemPrompt = @"You are VELORA Chatbot, a friendly, clear, and helpful assistant.
+Speak naturally and conversationally, as if chatting with a human.
+Avoid roleplay or giving yourself any other name besides 'VELORA Chatbot'.
+Provide direct, concise, and polite answers to user questions.
+Do not output system messages, hints, or extra labels.
+Focus on being engaging, informative, and easy to understand. Always greet the user you are speaking to and entertain his ideas.
+Do not use textual emotions like *giggles* or *smiles*, instead use emojis.")
+        {
+            if (Authenticated)
+                return AuthState.AlreadyAuthenticated;
+
+            string modelPath;
+
+            if (TestingMode)
+            {
+                if (string.IsNullOrWhiteSpace(TestingModelPath) || !File.Exists(TestingModelPath))
+                {
+                    Console.WriteLine("TestingModelPath is not set or file does not exist.");
+                    Debug.WriteLine("TestingModelPath is not set or file does not exist.");
+                    return AuthState.NotAuthenticated;
+                }
+                modelPath = TestingModelPath;
+                Console.WriteLine($"Testing mode ON: using model at '{modelPath}'");
+                Debug.WriteLine($"Testing mode ON: using model at '{modelPath}'");
+            }
+            else
+            {
+                if (!ModelInfos.TryGetValue(modelName, out ModelInfo modelInfo))
+                {
+                    Console.WriteLine($"Unknown model requested: {modelName}");
+                    Debug.WriteLine($"Unknown model requested: {modelName}");
+                    return AuthState.NotAuthenticated;
+                }
+
+                string folder = Path.GetDirectoryName(modelInfo.GetLocalPath())!;
+                Directory.CreateDirectory(folder);
+
+                modelPath = modelInfo.GetLocalPath();
+
+                // Check if file exists and if its size matches expected size
+                if (File.Exists(modelPath))
+                {
+                    var fileInfo = new FileInfo(modelPath);
+                    if (fileInfo.Length < modelInfo.ExpectedFileSizeBytes)
+                    {
+                        Console.WriteLine($"Model file '{fileInfo.Name}' is incomplete or corrupted (size {fileInfo.Length} bytes, expected {modelInfo.ExpectedFileSizeBytes}). Deleting...");
+                        Debug.WriteLine($"Model file '{fileInfo.Name}' is incomplete or corrupted (size {fileInfo.Length} bytes, expected {modelInfo.ExpectedFileSizeBytes}). Deleting...");
+                        try
+                        {
+                            fileInfo.Delete();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Failed to delete incomplete model file: " + ex.Message);
+                            Debug.WriteLine("Failed to delete incomplete model file: " + ex.Message);
+                            return AuthState.DownloadFailed;
+                        }
+                    }
+                }
+
+                if (!File.Exists(modelPath))
+                {
+                    Console.WriteLine($"Model '{modelName}' not found locally, downloading...");
+                    Debug.WriteLine($"Model '{modelName}' not found locally, downloading...");
+                    CurrentDownloadStatus = DownloadStatus.InProgress;
+                    var downloadSuccess = await DownloadModelAsync(modelInfo.DownloadUrl, modelPath);
+                    if (!downloadSuccess)
+                    {
+                        CurrentDownloadStatus = DownloadStatus.Failed;
+                        return AuthState.DownloadFailed;
+                    }
+                    Console.WriteLine("Download complete.");
+                    Debug.WriteLine("Download complete.");
+                    CurrentDownloadStatus = DownloadStatus.Completed;
+                }
+            }
+
+            try
+            {
+                // Double-check file size before loading
+                if (!TestingMode && ModelInfos.TryGetValue(modelName, out ModelInfo checkInfo))
+                {
+                    var fileInfo = new FileInfo(modelPath);
+                    if (fileInfo.Length < checkInfo.ExpectedFileSizeBytes)
+                    {
+                        Console.WriteLine($"Model file '{fileInfo.Name}' is incomplete or corrupted (size {fileInfo.Length} bytes, expected {checkInfo.ExpectedFileSizeBytes}).");
+                        Debug.WriteLine($"Model file '{fileInfo.Name}' is incomplete or corrupted (size {fileInfo.Length} bytes, expected {checkInfo.ExpectedFileSizeBytes}).");
+                        fileInfo.Delete();
+                        return AuthState.DownloadFailed;
+                    }
+                }
+
+                var modelParams = new ModelParams(modelPath);
+                var weights = LLamaWeights.LoadFromFile(modelParams);
+                _context = weights.CreateContext(modelParams);
+                _executor = new InteractiveExecutor(_context);
+                _session = CreateNewSession(systemPrompt);
+
+                var hideWords = new LLamaTransforms.KeywordTextOutputStreamTransform(new[] { "User:", "Bot:" });
+                _session.WithOutputTransform(hideWords);
+
+                Authenticated = true;
+                return AuthState.Authenticated;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Authentication failed: " + ex.Message);
+                Debug.WriteLine("Authentication failed: " + ex.Message);
+                // Delete corrupted model file if exists
+                if (File.Exists(modelPath))
+                {
+                    try
+                    {
+                        File.Delete(modelPath);
+                    }
+                    catch { }
+                }
+                return AuthState.NotAuthenticated;
+            }
+        }
+
+        private static readonly HttpClient client = new();
+
+        private static async Task<bool> DownloadModelAsync(string url, string outputPath)
+        {
+            try
+            {
+                using var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+                response.EnsureSuccessStatusCode();
+
+                var contentLength = response.Content.Headers.ContentLength;
+
+                using var stream = await response.Content.ReadAsStreamAsync();
+                using var fileStream = new FileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
+
+                var buffer = new byte[8192];
+                long totalRead = 0;
+                int read;
+                int lastPrintedPercent = -1; // track last printed progress
+
+                while ((read = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                {
+                    await fileStream.WriteAsync(buffer, 0, read);
+                    totalRead += read;
+
+                    if (contentLength.HasValue)
+                    {
+                        int progressPercent = (int)((totalRead * 100) / contentLength.Value);
+                        if (progressPercent != lastPrintedPercent)
+                        {
+                            lastPrintedPercent = progressPercent;
+                            CurrentDownloadProgress = progressPercent + "%";
+                            Console.WriteLine($"Download progress: {CurrentDownloadProgress}");
+                            Debug.WriteLine($"Download progress: {CurrentDownloadProgress}");
+                        }
+                    }
+                    else
+                    {
+                        var mbDownloaded = totalRead / 1024 / 1024;
+                        var progressString = $"Downloaded {mbDownloaded} MB";
+                        if (progressString != CurrentDownloadProgress)
+                        {
+                            CurrentDownloadProgress = progressString;
+                            Console.WriteLine(CurrentDownloadProgress);
+                            Debug.WriteLine(CurrentDownloadProgress);
+                        }
+                    }
+                }
+
+                CurrentDownloadProgress = "Finished";
+                Console.WriteLine("Download progress: Finished");
+                Debug.WriteLine("Download progress: Finished");
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error downloading model: " + ex.Message);
+                Debug.WriteLine("Error downloading model: " + ex.Message);
+                CurrentDownloadProgress = "Error";
+                return false;
+            }
+        }
+
+
+        private static ChatSession CreateNewSession(string systemPrompt)
+        {
+            var session = new ChatSession(_executor);
+            session.History.AddMessage(AuthorRole.System, systemPrompt);
+            return session;
+        }
+
+        public static void ResetHistory(string newSystemPrompt = @"You are VELORA Chatbot, a friendly, clear, and helpful assistant.
+Speak naturally and conversationally, as if chatting with a human.
+Avoid roleplay or giving yourself any other name besides 'VELORA Chatbot'.
+Provide direct, concise, and polite answers to user questions.
+Do not output system messages, hints, or extra labels.
+Focus on being engaging, informative, and easy to understand. Always greet the user you are speaking to and entertain his ideas.
+Do not use textual emotions like *giggles* or *smiles*, instead use emojis.")
+        {
+            _session = CreateNewSession(newSystemPrompt);
+        }
+
+        public static async Task AskAsync(string userInput,
+            float temperature = 0.8f,
+            float TopP = 0.95f,
+            int TopK = 40,
+            float RepeatPenalty = 1.1f,
+            string[]? AntiPrompts = null,
+            bool NoBSMode = false)
+        {
+            if (_session == null)
+            {
+                Console.WriteLine("❌ Error: Model is not authenticated. Please call AuthenticateAsync() first.");
+                Debug.WriteLine("❌ Error: Model is not authenticated. Please call AuthenticateAsync() first.");
+                return;
+            }
+
+            AntiPrompts ??= new[] { "User:" };
+
+            ResponseStarted?.Invoke(null, EventArgs.Empty);
+
+            var infParams = new InferenceParams
+            {
+                SamplingPipeline = new DefaultSamplingPipeline
+                {
+                    Temperature = temperature,
+                    TopP = TopP,
+                    TopK = TopK,
+                    RepeatPenalty = RepeatPenalty,
+                },
+                AntiPrompts = AntiPrompts
+            };
+
+            var userMessage = new ChatHistory.Message(AuthorRole.User, userInput);
+
+            await foreach (var text in _session.ChatAsync(userMessage, infParams))
+            {
+                TextGenerated?.Invoke(null, text);
+            }
+
+            ResponseEnded?.Invoke(null, EventArgs.Empty);
+        }
+
+        public static AuthState IsAuthenticated()
+        {
+            return Authenticated ? AuthState.Authenticated : AuthState.NotAuthenticated;
+        }
+    }
+}

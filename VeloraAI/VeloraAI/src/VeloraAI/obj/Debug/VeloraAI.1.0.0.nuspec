@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>VeloraAI</id>
+    <version>1.0.0</version>
+    <title>VeloraAI</title>
+    <authors>mixrifyAI</authors>
+    <icon>VeloraAI.png</icon>
+    <projectUrl>https://github.com/mixrifyAI/VeloraAI</projectUrl>
+    <description>𝗩𝗲𝗹𝗼𝗿𝗮𝗔𝗜 is an open-source library powered by LLamaSharp, designed for integrating local AI capabilities into commercial .NET applications. It focuses on efficiency and accessibility, using highly optimized, small-sized models and a strategic downloader that prioritizes speed to ensure fast and seamless access to VeloraAI-supported models.</description>
+    <tags>ChatGPT, AI, DeepSeek, LLM, Artificial Intelligence, LLamaSharp</tags>
+    <repository type="git" url="https://github.com/mixrifyAI/VeloraAI" commit="59e298eeea3c848b6c520662fc8426689c94a81e" />
+    <dependencies>
+      <group targetFramework="net8.0">
+        <dependency id="LLamaSharp" version="0.24.0" exclude="Build,Analyzers" />
+        <dependency id="LLamaSharp.Backend.Cpu" version="0.24.0" exclude="Build,Analyzers" />
+        <dependency id="System.Text.Json" version="9.0.6" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <contentFiles>
+      <files include="any/net8.0/VeloraAI.ico" buildAction="Content" />
+    </contentFiles>
+  </metadata>
+  <files>
+    <file src="C:\Users\ziadf\Downloads\VeloraAI\VeloraAI\src\VeloraAI\bin\Debug\net8.0\VeloraAI.dll" target="lib\net8.0\VeloraAI.dll" />
+    <file src="C:\Users\ziadf\Downloads\VeloraAI\VeloraAI\src\VeloraAI\VeloraAI.ico" target="content\VeloraAI.ico" />
+    <file src="C:\Users\ziadf\Downloads\VeloraAI\VeloraAI\src\VeloraAI\VeloraAI.ico" target="contentFiles\any\net8.0\VeloraAI.ico" />
+    <file src="C:\Users\ziadf\Downloads\VeloraAI.png" target="\VeloraAI.png" />
+  </files>
+</package>

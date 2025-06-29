@@ -1,0 +1,87 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\ziadf\\Downloads\\Local-LLM-csharp-main\\Local-LLM-csharp-main\\src\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{C87850D7-12BA-4080-80AE-56E3C004DA6C}|VeloraAI\\VeloraAI.csproj|c:\\users\\ziadf\\downloads\\local-llm-csharp-main\\local-llm-csharp-main\\src\\veloraai\\veloraai.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C87850D7-12BA-4080-80AE-56E3C004DA6C}|VeloraAI\\VeloraAI.csproj|solutionrelative:veloraai\\veloraai.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AC5FF012-759D-483D-B3B3-BF1B63989970}|VeloraAI.WinForms\\VeloraAI.WinForms.csproj|c:\\users\\ziadf\\downloads\\local-llm-csharp-main\\local-llm-csharp-main\\src\\veloraai.winforms\\app.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AC5FF012-759D-483D-B3B3-BF1B63989970}|VeloraAI.WinForms\\VeloraAI.WinForms.csproj|solutionrelative:veloraai.winforms\\app.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F0063DF5-1111-4ACF-B085-EE4D563A601A}|VeloraAI.Console\\VeloraAI.Console.csproj|c:\\users\\ziadf\\downloads\\local-llm-csharp-main\\local-llm-csharp-main\\src\\veloraai.console\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F0063DF5-1111-4ACF-B085-EE4D563A601A}|VeloraAI.Console\\VeloraAI.Console.csproj|solutionrelative:veloraai.console\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AC5FF012-759D-483D-B3B3-BF1B63989970}|VeloraAI.WinForms\\VeloraAI.WinForms.csproj|C:\\Users\\ziadf\\Downloads\\Local-LLM-csharp-main\\Local-LLM-csharp-main\\src\\veloraai.winforms\\app.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{AC5FF012-759D-483D-B3B3-BF1B63989970}|VeloraAI.WinForms\\VeloraAI.WinForms.csproj|solutionrelative:veloraai.winforms\\app.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\ziadf\\Downloads\\Local-LLM-csharp-main\\Local-LLM-csharp-main\\src\\VeloraAI.Console\\Program.cs",
+              "RelativeDocumentMoniker": "VeloraAI.Console\\Program.cs",
+              "ToolTip": "C:\\Users\\ziadf\\Downloads\\Local-LLM-csharp-main\\Local-LLM-csharp-main\\src\\VeloraAI.Console\\Program.cs",
+              "RelativeToolTip": "VeloraAI.Console\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-29T13:34:01.462Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "VeloraAI.cs",
+              "DocumentMoniker": "C:\\Users\\ziadf\\Downloads\\Local-LLM-csharp-main\\Local-LLM-csharp-main\\src\\VeloraAI\\VeloraAI.cs",
+              "RelativeDocumentMoniker": "VeloraAI\\VeloraAI.cs",
+              "ToolTip": "C:\\Users\\ziadf\\Downloads\\Local-LLM-csharp-main\\Local-LLM-csharp-main\\src\\VeloraAI\\VeloraAI.cs",
+              "RelativeToolTip": "VeloraAI\\VeloraAI.cs",
+              "ViewState": "AgIAAK4BAAAAAAAAAAAAAL0BAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-28T23:44:51.365Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "App.cs",
+              "DocumentMoniker": "C:\\Users\\ziadf\\Downloads\\Local-LLM-csharp-main\\Local-LLM-csharp-main\\src\\VeloraAI.WinForms\\App.cs",
+              "RelativeDocumentMoniker": "VeloraAI.WinForms\\App.cs",
+              "ToolTip": "C:\\Users\\ziadf\\Downloads\\Local-LLM-csharp-main\\Local-LLM-csharp-main\\src\\VeloraAI.WinForms\\App.cs",
+              "RelativeToolTip": "VeloraAI.WinForms\\App.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAAqwEkAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-28T16:15:15.357Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "App.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\ziadf\\Downloads\\Local-LLM-csharp-main\\Local-LLM-csharp-main\\src\\VeloraAI.WinForms\\App.cs",
+              "RelativeDocumentMoniker": "VeloraAI.WinForms\\App.cs",
+              "ToolTip": "C:\\Users\\ziadf\\Downloads\\Local-LLM-csharp-main\\Local-LLM-csharp-main\\src\\VeloraAI.WinForms\\App.cs [Design]",
+              "RelativeToolTip": "VeloraAI.WinForms\\App.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-28T21:39:41.358Z",
+              "EditorCaption": " [Design]"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
