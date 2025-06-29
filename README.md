@@ -1,7 +1,7 @@
 # <img src="https://github.com/user-attachments/assets/c4638237-5e6b-4125-8ada-099277df25b1" alt="VeloraAI" width="200"/>
 
 
-🚀 **VeloraAI** is a modern and flexible C# library designed to simplify local LLM integration. It allows developers to interact with quantized AI models directly from .NET 8.0 applications — with a single line of code. Whether you're building chatbots, creative tools, or AI companions, VeloraAI is optimized for speed, reliability, and customization.
+🚀 **VeloraAI** is a modern and flexible C# library designed to simplify local LLM integration. It allows developers to interact with quantized AI models directly from .NET Standard 2/.NET 8.0 applications — with a single line of code. Whether you're building chatbots, creative tools, or AI companions, VeloraAI is optimized for speed, reliability, and customization.
 
 
 ---
