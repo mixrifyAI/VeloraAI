@@ -3,6 +3,7 @@
 
 🚀 **VeloraAI** is a modern and flexible C# library designed to simplify local LLM integration. It allows developers to interact with quantized AI models directly from .NET 8.0 applications — with a single line of code. Whether you're building chatbots, creative tools, or AI companions, VeloraAI is optimized for speed, reliability, and customization.
 
+
 ---
 
 ## ✨ Features
@@ -13,6 +14,17 @@
 * 🔐 **Customizable System Prompts** — Use friendly or aggressive instruction styles (e.g., `NoBSMode`).
 * 📦 **Model Downloader** — Automatically fetches models from Hugging Face if not already available.
 * 📷 **Experimental Vision Mode** — Send image + prompt for visual reasoning (WIP).
+
+---
+
+⚠️ **WARNING:** VeloraAI does **NOT** work with the Legacy .NET Framework. You must use **.NET Standard 2**. or **.NET 8.0**.
+The following exception occurs when trying VeloraAI on .NET Framework:
+```cs
+Exception thrown: 'System.TypeLoadException' in LLamaSharp.dll
+Authentication failed: Could not load type 'LLama.Native.NativeApi' from assembly 'LLamaSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null' because the method 'llama_backend_free' has no implementation (no RVA).
+```
+
+The fix for this problem is currently unfamiliar, however there is a chance that finding this fix would need LLamaSharp's source code integrated into VeloraAI's project and modified to make it work properly with .NET Framework. This is not promised. __You are free to fork the project and find a fix for this issue and push it.__
 
 ---
 
